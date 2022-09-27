@@ -10,7 +10,4 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @IsOptional()
   @ApiProperty()
   lastName: string;
-  @IsOptional()
-  @ApiProperty()
-  userType: string;
 }

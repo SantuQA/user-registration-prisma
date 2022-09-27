@@ -24,6 +24,7 @@ import {
 import { SessionGuard } from 'src/auth/session.guard';
 import { UpdatePermissionDto } from './dto/update-user-permission';
 import { AccessController, USER_TYPES } from './role.enum';
+import { UpdateUserControllerAccessDto } from './dto/update-user-controller-accsess';
 
 @ApiBearerAuth()
 @ApiTags('These are only for admin!')
@@ -68,13 +69,13 @@ export class UserController {
   @HttpCode(200)
   @ApiOperation({ summary: 'Update user access controller' })
   updateUserControllerAccess(
-   
+    @Body() updateUserControllerAccessDto : UpdateUserControllerAccessDto,
     @Request() req,
   ) {
-    //console.log(updateUserControllerAccessDto);
+    console.log(updateUserControllerAccessDto);
     const user = req.user;
     if (user.userType == USER_TYPES.ADMIN) {
-      return this.userService.updateUserControllerAccess();
+      return this.userService.updateUserControllerAccess(updateUserControllerAccessDto);
     } else {
       throw new UnauthorizedException('You are not authorised!');
     }
@@ -84,11 +85,12 @@ export class UserController {
   @HttpCode(200)
   @ApiOperation({ summary: 'Remove user access controller' })
   removeUserControllerAccess(
+    @Body() updateUserControllerAccessDto : UpdateUserControllerAccessDto,
     @Request() req,
   ) {
     const user = req.user;
     if (user.userType == USER_TYPES.ADMIN) {
-      return this.userService.removeUserControllerAccess();
+      return this.userService.removeUserControllerAccess(updateUserControllerAccessDto);
     } else {
       throw new UnauthorizedException('You are not authorised!');
     }
@@ -112,14 +114,14 @@ export class UserController {
   @HttpCode(200)
   @ApiOperation({ summary: 'Get all users' })
   findAll(@Request() req) {
-    console.log(this.getControllerName());
-    return this.userService.findAll();
-    // const user = req.user;
-    // if (user.userType == USER_TYPES.ADMIN) {
-    //   return this.userService.findAll();
-    // } else {
-    //   throw new UnauthorizedException('You are not authorised!');
-    // }
+    //console.log(this.getControllerName());
+    //return this.userService.findAll();
+     const user = req.user;
+    if (user.userType == USER_TYPES.ADMIN) {
+      return this.userService.findAll();
+    } else {
+      throw new UnauthorizedException('You are not authorised!');
+    }
   }
   @Get('/:id')
   @UseGuards(SessionGuard)
