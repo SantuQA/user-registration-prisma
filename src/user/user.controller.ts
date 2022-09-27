@@ -34,9 +34,8 @@ export class UserController {
    
   }
   getControllerName(){
-    return AccessController.USER_CONTROLLER;
+    return AccessController.USER_CONTROLLER;       // ASSIGN CONTROLLER NAME
   }
- 
   @UseGuards(SessionGuard)
   @Post()
   @HttpCode(201)
@@ -115,7 +114,6 @@ export class UserController {
   @ApiOperation({ summary: 'Get all users' })
   findAll(@Request() req) {
     //console.log(this.getControllerName());
-    //return this.userService.findAll();
      const user = req.user;
     if (user.userType == USER_TYPES.ADMIN) {
       return this.userService.findAll();
@@ -175,7 +173,6 @@ export class UserController {
   findAllController(@Request() req) {
     const user = req.user;
     if (user.userType == USER_TYPES.ADMIN) {
-      //return "hi";
       return this.userService.findAllControllerName();
     } else {
       throw new UnauthorizedException('You are not authorised!');

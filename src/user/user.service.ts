@@ -198,20 +198,25 @@ export class UserService {
     if (!user_master) {
       throw new NotFoundException(['user does not exist!']);
     }
-    const list = 
-    await this.prismaService.aCCESSS_CONTROL_Master.findMany({where:{
-      userId:user_master.id
-    }});
+    const list = await this.prismaService.aCCESSS_CONTROL_Master.findMany({
+      where: {
+        userId: user_master.id,
+      },
+    });
     return list;
   }
   async findAll() {
     return await this.prismaService.userMaster.findMany();
   }
   async findOne(_id: string) {
-    return await this.prismaService.userMaster.findUnique({where:{id:_id}});
+    return await this.prismaService.userMaster.findUnique({
+      where: { id: _id },
+    });
   }
   async findOneByUsername(username: string) {
-     const existingUserName = await this.prismaService.userMaster.findMany({where:{username:username}});
+    const existingUserName = await this.prismaService.userMaster.findMany({
+      where: { username: username },
+    });
     if (existingUserName.length < 1) {
       throw new BadRequestException(['username not valid!']);
     }
@@ -220,7 +225,7 @@ export class UserService {
   async update(_id: string, updateUserDto: UpdateUserDto) {
     const user_master = await this.prismaService.userMaster.findUnique({
       where: {
-        id:_id,
+        id: _id,
       },
     });
     if (!user_master) {
@@ -232,14 +237,14 @@ export class UserService {
       },
       data: {
         firstName: updateUserDto.firstName,
-        lastName: updateUserDto.lastName
+        lastName: updateUserDto.lastName,
       },
     });
   }
   async remove(_id: string) {
     const user_master = await this.prismaService.userMaster.findUnique({
       where: {
-        id:_id,
+        id: _id,
       },
     });
     if (!user_master) {
@@ -248,13 +253,8 @@ export class UserService {
     return await this.prismaService.userMaster.delete({
       where: {
         id: _id,
-      }
+      },
     });
-    // const user = await this.userRepository.findOneById(id);
-    // if (!user) {
-    //   throw new BadRequestException(['userid not valid!']);
-    // }
-    // return await this.userRepository.remove(user);
   }
   async findAllControllerName() {
     return AccessController;

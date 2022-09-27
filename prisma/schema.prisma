@@ -42,3 +42,12 @@ model User_Permission_Master {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 }
+model Todo{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String
+  title String
+  completed Boolean
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
