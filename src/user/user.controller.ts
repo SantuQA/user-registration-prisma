@@ -71,7 +71,6 @@ export class UserController {
     @Body() updateUserControllerAccessDto : UpdateUserControllerAccessDto,
     @Request() req,
   ) {
-    console.log(updateUserControllerAccessDto);
     const user = req.user;
     if (user.userType == USER_TYPES.ADMIN) {
       return this.userService.updateUserControllerAccess(updateUserControllerAccessDto);
@@ -113,7 +112,6 @@ export class UserController {
   @HttpCode(200)
   @ApiOperation({ summary: 'Get all users' })
   findAll(@Request() req) {
-    //console.log(this.getControllerName());
      const user = req.user;
     if (user.userType == USER_TYPES.ADMIN) {
       return this.userService.findAll();

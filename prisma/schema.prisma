@@ -50,4 +50,12 @@ model Todo{
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 }
-
+model ProductMaster{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String
+  name String
+  price Int
+  quantity Int
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
