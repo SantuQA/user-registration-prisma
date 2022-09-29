@@ -26,7 +26,6 @@
 ```bash
 mongodb+srv://root:4DQACONNECT@cluster0.lerzlry.mongodb.net/test-project-prisma?retryWrites=true&w=majority
 ```
-
 ## Description
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
