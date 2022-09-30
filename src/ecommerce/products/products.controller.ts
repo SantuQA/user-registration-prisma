@@ -2,10 +2,17 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, HttpCode,
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AccessController, USER_TYPES } from 'src/user/role.enum';
 import { SessionGuard } from 'src/auth/session.guard';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { Req } from '@nestjs/common';
+import { UploadedFile } from '@nestjs/common';
+import { fileURLToPath } from 'url';
+import { UploadFileDto } from './dto/localFile.dto';
 
 @Controller('products')
 @ApiTags('Products')
@@ -122,4 +129,39 @@ export class ProductsController {
       throw new UnauthorizedException('You are not authorised!');
     }
   }
+  @Post('productimg')
+  @UseGuards(SessionGuard)
+  @ApiConsumes("multipart/form-data")
+  @UseInterceptors(FileInterceptor('file', {
+    storage: diskStorage({
+      destination: './uploadedFiles/productImg',
+      filename:(req, file, cb) => {
+        const fileNameSplit = file.originalname.split(".");
+        const fileExt = fileNameSplit[fileNameSplit.length - 1];
+        const fileOriginalName = fileNameSplit[0];
+        const fileOriginalNameHaveSpace = file.originalname.split('');
+        if (fileOriginalNameHaveSpace.length > 0) {
+          const FileName = file.originalname.split(' ').join('_');
+          const newFileName = FileName.split(".")[0];
+          cb(null, `${newFileName}_${Date.now()}.${fileExt}`);
+        } else {
+          const fname =fileOriginalName.split(".")[0];
+          cb(null, `${fname}_${Date.now()}.${fileExt}`);
+        }
+        
+      }
+    })
+  }))
+  async save(@UploadedFile() fileURLToPath : Express.Multer.File, @Body() body: UploadFileDto){
+    console.log(fileURLToPath);
+    return;
+  }
+  // async addAvatar(@Req() req, @UploadedFile() file: Express.Multer.File) {
+  //   const user = req.user;
+  //   return this.productsService.addProductImg(user.id, {
+  //     path: file.path,
+  //     filename: file.originalname,
+  //     mimetype: file.mimetype
+  //   });
+  // }
 }

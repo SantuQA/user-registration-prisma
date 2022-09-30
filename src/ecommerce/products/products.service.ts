@@ -71,4 +71,10 @@ export class ProductsService {
       },
     });
   }
+  // async addProductImg(userId: number, fileData: LocalFileDto) {
+  //   const avatar = await this.localFilesService.saveLocalFileData(fileData);
+  //   await this.usersRepository.update(userId, {
+  //     avatarId: avatar.id
+  //   })
+  // }
 }
