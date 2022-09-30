@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+
+    dev:
+        container_name: nest_mongo_prisma_docker_dev
+        image: nestjs-api-dev:1.0.0
+        build:
+            context: .
+            target: development
+            dockerfile: ./Dockerfile
+        command: npm run start:debug
+        ports:
+            - 3000:3000
+            - 9230:9230
+        networks:
+            - nestjs-network
+        
+        volumes:
+            - .:/usr/src/app
+            - /usr/src/app/node_modules
+        restart: unless-stopped
+        env_file: ./.env
+        environment:
+            - DATABASE_URL=$DATABASE_URL
+    
+    prod:
+        container_name: nest_mongo_prisma_docker_prod
+        image: nestjs-api-prod:1.0.0
+        build:
+            context: .
+            target: production
+            dockerfile: ./Dockerfile
+        command: npm run start:prod
+        ports:
+            - 3000:3000
+            - 9230:9230
+        networks:
+            - nestjs-network
+        
+        volumes:
+            - .:/usr/src/app
+            - /usr/src/app/node_modules
+        restart: unless-stopped
+        env_file: ./.env
+        environment:
+            - DATABASE_URL=$DATABASE_URL
+
+networks:
+    nestjs-network:
