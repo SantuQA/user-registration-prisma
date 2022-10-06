@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, HttpCode,Request,UnauthorizedException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, HttpCode,Request,UnauthorizedException, Res } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -13,6 +13,8 @@ import { Req } from '@nestjs/common';
 import { UploadedFile } from '@nestjs/common';
 import { fileURLToPath } from 'url';
 import { UploadFileDto } from './dto/localFile.dto';
+import { Observable, of } from 'rxjs';
+import { join } from 'path';
 
 @Controller('products')
 @ApiTags('Products')
@@ -152,9 +154,21 @@ export class ProductsController {
       }
     })
   }))
-  async save(@UploadedFile() fileURLToPath : Express.Multer.File, @Body() body: UploadFileDto){
+  async save(@UploadedFile() fileURLToPath : Express.Multer.File, @Body() body: UploadFileDto,@Request() req){
+    const user = req.user;
+    const pId = body.productId;
+    const iName = fileURLToPath.filename;
+    const iUrl = join(process.cwd(), 'uploadedFiles/productImg/' + iName);
+    const result = await this.prismaService.productImage.create({
+      data:{
+        url:iUrl,
+        name:iName,
+        productId:pId
+      }
+    })
     console.log(fileURLToPath);
-    return;
+    return result;
+  
   }
   // async addAvatar(@Req() req, @UploadedFile() file: Express.Multer.File) {
   //   const user = req.user;
@@ -164,4 +178,9 @@ export class ProductsController {
   //     mimetype: file.mimetype
   //   });
   // }
+  @Get('product-image/:productId')
+  async findProfileImage(@Param('productId') pId : string) {
+    //return of(res.sendFile(join(process.cwd(), 'uploadedFiles/productImg/' + imagename)));
+    return await this.prismaService.productImage.findMany({where:{productId: pId}})
+  }
 }

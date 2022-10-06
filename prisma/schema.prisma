@@ -56,6 +56,15 @@ model ProductMaster{
   name String
   price Int
   quantity Int
+  product_img ProductImage[]
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+}
+model ProductImage {
+  id             String @id @default(auto()) @map("_id") @db.ObjectId
+  /// Field referred in an index, but found no data to define the type.
+  name String  @unique
+  url String @unique
+  product    ProductMaster    @relation(references: [id], fields: [productId], onDelete: Cascade)
+  productId  String  @db.ObjectId
 }
