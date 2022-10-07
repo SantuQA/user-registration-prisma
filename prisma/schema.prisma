@@ -68,3 +68,15 @@ model ProductImage {
   product    ProductMaster    @relation(references: [id], fields: [productId], onDelete: Cascade)
   productId  String  @db.ObjectId
 }
+model CustomDataFromXls {
+  id             String @id @default(auto()) @map("_id") @db.ObjectId
+  extendedXlsData Json?
+  xlsdata    CustomDataFromXlsMaster    @relation(references: [id], fields: [xlsdataID], onDelete: Cascade)
+  xlsdataID  String  @db.ObjectId
+}
+model CustomDataFromXlsMaster {
+  id             String @id @default(auto()) @map("_id") @db.ObjectId
+  fileName  String
+  extendedData CustomDataFromXls[]
+
+}

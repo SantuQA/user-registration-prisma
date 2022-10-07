@@ -3,6 +3,7 @@ import { AuthModule } from './auth/auth.module';
 import 'dotenv/config';
 import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
+import { XlsxioModule } from './xlsxio/xlsxio.module';
 const { DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME } = process.env;
 @Module({
   imports: [
@@ -24,7 +25,8 @@ const { DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME } = process.env;
       isGlobal: true,
     }),
     PrismaModule,
-    AuthModule
+    AuthModule,
+    XlsxioModule
     
     
   ]
