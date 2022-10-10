@@ -5,18 +5,36 @@
 [circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
 [circleci-url]: https://circleci.com/gh/nestjs/nest
 
+## Description
+This is a test project for  User auth (JWt and session based) , MongoDB atlas cluster, Prisma ORM, Docker Compose, File upload local storage, Specific module auth by user etc.
+
+# REQUIREMENTS
+
+-   Node.js
+-   NPM
+-   Docker
+-   Express
+-   Prisma
+
+# TOOLS
+
+-   Docker Desktop
+-   VS Code
+-   Git
+-   Postman
+
+# GETTING STARTED
+Clone the repository, install the dependencies.
+```bash
+git clone the repository https://github.com/SantuQA/user-registration-prisma.git
+$ cd <working-directory>   
+$ npm install
+$ npm start
+```
+
 ## Connection String Mongodb Atlas.
 ```bash
 mongodb+srv://root:4DQACONNECT@cluster0.lerzlry.mongodb.net/test-project-prisma?retryWrites=true&w=majority
-```
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation
-
-```bash
-$ npm install
 ```
 
 ## Running the app
