@@ -32,7 +32,7 @@ $ npm install
 ```
 
 ## Connection String Mongodb Atlas.
-Create a dot env file and paste this connection string.
+Create a dot env file and paste this line.
 ```bash
 DATABASE_URL=mongodb+srv://root:4DQACONNECT@cluster0.lerzlry.mongodb.net/test-project-prisma?retryWrites=true&w=majority
 ```
