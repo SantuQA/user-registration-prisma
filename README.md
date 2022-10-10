@@ -48,12 +48,14 @@ $ npm run start:dev
 
 # production mode
 $ npm run start:prod
+
 ```
 # DOCKER COMPOSE
 ```bash
 $ docker compose  -f "docker-compose.yml" up -d --build dev                      //START DEV
 $ docker compose -f "docker-compose.yml" down                               //STOP
 $ docker ps 
+```
 
 # Swagger UI
 After running the app.
