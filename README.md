@@ -55,6 +55,16 @@ $ docker compose  -f "docker-compose.yml" up -d --build dev                     
 $ docker compose -f "docker-compose.yml" down                               //STOP
 $ docker ps 
 
+# Swagger UI
+After running the app.
+```bash
+http://localhost:3000/api
+```
+POST
+/auth/login
+username-admin
+pwd-admin
+
 ## License
 
 Nest is [MIT licensed](LICENSE).
