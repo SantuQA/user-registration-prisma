@@ -29,12 +29,12 @@ Clone the repository, install the dependencies.
 git clone the repository https://github.com/SantuQA/user-registration-prisma.git
 $ cd <working-directory>   
 $ npm install
-$ npm start
 ```
 
 ## Connection String Mongodb Atlas.
+Create a dot env file and paste this connection string.
 ```bash
-mongodb+srv://root:4DQACONNECT@cluster0.lerzlry.mongodb.net/test-project-prisma?retryWrites=true&w=majority
+DATABASE_URL=mongodb+srv://root:4DQACONNECT@cluster0.lerzlry.mongodb.net/test-project-prisma?retryWrites=true&w=majority
 ```
 
 ## Running the app
@@ -49,6 +49,11 @@ $ npm run start:dev
 # production mode
 $ npm run start:prod
 ```
+# DOCKER COMPOSE
+```bash
+$ docker compose  -f "docker-compose.yml" up -d --build dev                      //START DEV
+$ docker compose -f "docker-compose.yml" down                               //STOP
+$ docker ps 
 
 ## License
 
