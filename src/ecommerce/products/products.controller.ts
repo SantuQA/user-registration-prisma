@@ -1,4 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, HttpCode,Request,UnauthorizedException, Res } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  HttpCode,
+  Request,
+  UnauthorizedException,
+  Res,
+} from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -12,22 +25,25 @@ import { diskStorage } from 'multer';
 import { Req } from '@nestjs/common';
 import { UploadedFile } from '@nestjs/common';
 import { fileURLToPath } from 'url';
-import { UploadFileDto } from './dto/localFile.dto';
+import { ProductImageUploadDto } from './dto/localFile.dto';
 import { Observable, of } from 'rxjs';
 import { join } from 'path';
 
 @Controller('products')
 @ApiTags('Products')
 export class ProductsController {
-  constructor(private readonly productsService: ProductsService, private readonly prismaService: PrismaService) {}
-  getControllerName(){
+  constructor(
+    private readonly productsService: ProductsService,
+    private readonly prismaService: PrismaService,
+  ) {}
+  getControllerName() {
     return AccessController.PRODUCT_CONTROLLER;
   }
   @UseGuards(SessionGuard)
   @HttpCode(201)
   @ApiOperation({ summary: 'Create product' })
   @Post()
-  async create(@Body() createProductDto: CreateProductDto,@Request() req) {
+  async create(@Body() createProductDto: CreateProductDto, @Request() req) {
     const user = req.user;
     const _controllername = this.getControllerName();
     var filter = {
@@ -38,8 +54,7 @@ export class ProductsController {
     const existingPermission =
       await this.prismaService.aCCESSS_CONTROL_Master.findMany(filter);
     if (existingPermission.length > 0 || user.userType == USER_TYPES.ADMIN) {
-      //return this.todosService.create(createTodoDto, user.id);
-      return this.productsService.create(createProductDto,user.id);
+      return this.productsService.create(createProductDto, user.id);
     } else {
       throw new UnauthorizedException('You are not authorised!');
     }
@@ -71,7 +86,6 @@ export class ProductsController {
   @ApiOperation({ summary: 'Get product by id' })
   @Get(':id')
   async findOne(@Param('id') id: string, @Request() req) {
-    
     const user = req.user;
     const _controllername = this.getControllerName();
     var filter = {
@@ -92,8 +106,11 @@ export class ProductsController {
   @HttpCode(200)
   @ApiOperation({ summary: 'Update product by id' })
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto,@Request() req) {
-    
+  async update(
+    @Param('id') id: string,
+    @Body() updateProductDto: UpdateProductDto,
+    @Request() req,
+  ) {
     const user = req.user;
     const _controllername = this.getControllerName();
     var filter = {
@@ -115,7 +132,6 @@ export class ProductsController {
   @ApiOperation({ summary: 'Remove product by id' })
   @Delete(':id')
   async remove(@Param('id') id: string, @Request() req) {
-   
     const user = req.user;
     const _controllername = this.getControllerName();
     var filter = {
@@ -131,56 +147,58 @@ export class ProductsController {
       throw new UnauthorizedException('You are not authorised!');
     }
   }
+
   @Post('productimg')
   @UseGuards(SessionGuard)
-  @ApiConsumes("multipart/form-data")
-  @UseInterceptors(FileInterceptor('file', {
-    storage: diskStorage({
-      destination: './uploadedFiles/productImg',
-      filename:(req, file, cb) => {
-        const fileNameSplit = file.originalname.split(".");
-        const fileExt = fileNameSplit[fileNameSplit.length - 1];
-        const fileOriginalName = fileNameSplit[0];
-        const fileOriginalNameHaveSpace = file.originalname.split('');
-        if (fileOriginalNameHaveSpace.length > 0) {
-          const FileName = file.originalname.split(' ').join('_');
-          const newFileName = FileName.split(".")[0];
-          cb(null, `${newFileName}_${Date.now()}.${fileExt}`);
-        } else {
-          const fname =fileOriginalName.split(".")[0];
-          cb(null, `${fname}_${Date.now()}.${fileExt}`);
-        }
-        
-      }
-    })
-  }))
-  async save(@UploadedFile() fileURLToPath : Express.Multer.File, @Body() body: UploadFileDto,@Request() req){
+  @HttpCode(201)
+  @ApiConsumes('multipart/form-data')
+  @ApiOperation({ summary: 'Add product image by id' })
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploadedFiles/productImg',
+        filename: (req, file, cb) => {
+          const fileNameSplit = file.originalname.split('.');
+          const fileExt = fileNameSplit[fileNameSplit.length - 1];
+          const fileOriginalName = fileNameSplit[0];
+          const fileOriginalNameHaveSpace = file.originalname.split('');
+          if (fileOriginalNameHaveSpace.length > 0) {
+            const FileName = file.originalname.split(' ').join('_');
+            const newFileName = FileName.split('.')[0];
+            cb(null, `${newFileName}_${Date.now()}.${fileExt}`);
+          } else {
+            const fname = fileOriginalName.split('.')[0];
+            cb(null, `${fname}_${Date.now()}.${fileExt}`);
+          }
+        },
+      }),
+    }),
+  )
+  async save(
+    @UploadedFile() fileURLToPath: Express.Multer.File,
+    @Body() body: ProductImageUploadDto,
+    @Request() req,
+  ) {
     const user = req.user;
     const pId = body.productId;
     const iName = fileURLToPath.filename;
     const iUrl = join(process.cwd(), 'uploadedFiles/productImg/' + iName);
     const result = await this.prismaService.productImage.create({
-      data:{
-        url:iUrl,
-        name:iName,
-        productId:pId
-      }
-    })
+      data: {
+        url: iUrl,
+        name: iName,
+        productId: pId,
+      },
+    });
     console.log(fileURLToPath);
     return result;
-  
   }
-  // async addAvatar(@Req() req, @UploadedFile() file: Express.Multer.File) {
-  //   const user = req.user;
-  //   return this.productsService.addProductImg(user.id, {
-  //     path: file.path,
-  //     filename: file.originalname,
-  //     mimetype: file.mimetype
-  //   });
-  // }
   @Get('product-image/:productId')
-  async findProfileImage(@Param('productId') pId : string) {
+  @ApiOperation({ summary: 'Get product image by id' })
+  async findProfileImage(@Param('productId') pId: string) {
     //return of(res.sendFile(join(process.cwd(), 'uploadedFiles/productImg/' + imagename)));
-    return await this.prismaService.productImage.findMany({where:{productId: pId}})
+    return await this.prismaService.productImage.findMany({
+      where: { productId: pId },
+    });
   }
 }

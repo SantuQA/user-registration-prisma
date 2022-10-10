@@ -4,7 +4,6 @@ import {
   Post,
   UploadedFile,
   UseInterceptors,
-  ServiceUnavailableException,
   BadRequestException,
   HttpCode,
   Get,
@@ -29,7 +28,7 @@ export class XlsxioController {
     private readonly prismaService: PrismaService,
   ) {}
   @Post('uploadxlsx')
-  @ApiOperation({ summary: 'Upload Xlsx file' })
+  @ApiOperation({ summary: 'Upload excel file' })
   @ApiConsumes('multipart/form-data')
   @HttpCode(201)
   @UseInterceptors(
@@ -56,8 +55,6 @@ export class XlsxioController {
           cb(null, true);
         } else {
           cb(null, false);
-          //return new BadRequestException('Only .xlsx format allowed!');
-          //return cb(new Error('Only .xlsx format allowed!'),false);
           return cb(
             new BadRequestException(
               'Only .xlsx, xlsb, csv, xlsm format allowed!',
@@ -85,25 +82,19 @@ export class XlsxioController {
         data.push(res);
       });
     }
-    //console.log(data);
     var myJsonString = data as Prisma.JsonArray;
-
     const addmaster = await this.prismaService.customDataFromXlsMaster.create({
       data: { fileName: fileName },
     });
     for (let i = 0; i < myJsonString.length; i++) {
-      //console.log(myJsonString[i]);
       var newarr = myJsonString[i] as Prisma.JsonArray;
       await this.prismaService.customDataFromXls.create({
         data: { extendedXlsData: newarr, xlsdataID: addmaster.id },
       });
-      //await this.prismaService.customDataFromXlsMaster.create({data:{extendedData:{create:{}}}})
     }
-    //console.log(myJsonString);
-    //const insertJsontoDB = await this.prismaService.customDataFromXls.create({data:{fileName:fileName,extendedXlsData:myJsonString}});
-    //return insertJsontoDB;
   }
   @Get('custom-data-xls/:fileName')
+  @ApiOperation({ summary: 'Get data by excel file name' })
   async findProfileImage(@Param('fileName') xlsFilename: string) {
     //return of(res.sendFile(join(process.cwd(), 'uploadedFiles/xlsxFile/' + xlsFilename)));
     var jsonFilter = { Gender: 'Female' };
@@ -118,7 +109,6 @@ export class XlsxioController {
           fileName: xlsFilename,
         },
       });
-    //console.log(xls_master);
     if (xls_master.length < 1) {
       throw new NotFoundException(['file doesnot exist!']);
     }
@@ -126,9 +116,11 @@ export class XlsxioController {
       where: {
         xlsdataID: xls_master[0].id,
       },
+      select: {
+        id: true,
+        extendedXlsData: true,
+      },
     });
     return list;
-    //return await this.prismaService.customDataFromXls.findMany({where:{fileName: xlsFilename,extendedXlsData:{equals:jsonFilter}}})
-    //return await this.prismaService.customDataFromXls.findMany(jsonFilter);
   }
 }

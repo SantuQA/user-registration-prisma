@@ -5,9 +5,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 
 @Injectable()
 export class ProductsService {
-  constructor(
-    private readonly prismaService: PrismaService
-    ){}
+  constructor(private readonly prismaService: PrismaService) {}
   async create(createProductDto: CreateProductDto, user_id: string) {
     var productData = {
       data: {
@@ -15,24 +13,27 @@ export class ProductsService {
         name: createProductDto.name,
         price: createProductDto.price,
         quantity: createProductDto.quantity,
-        
       },
     };
-    const saveProduct = await this.prismaService.productMaster.create(productData);
-    //cart initialization here
+    const saveProduct = await this.prismaService.productMaster.create(
+      productData,
+    );
     return {
-      ...saveProduct
+      ...saveProduct,
     };
   }
 
   async findAll() {
-    return await this.prismaService.productMaster.findMany();
+    return await this.prismaService.productMaster.findMany({
+      include: { product_img: true },
+    });
   }
 
   async findOne(_id: string) {
     return await this.prismaService.productMaster.findUnique({
       where: { id: _id },
-    }); 
+      include: { product_img: true },
+    });
   }
 
   async update(_id: string, updateProductDto: UpdateProductDto) {
@@ -49,9 +50,9 @@ export class ProductsService {
         id: _id,
       },
       data: {
-        name : updateProductDto.name,
+        name: updateProductDto.name,
         price: updateProductDto.price,
-        quantity: updateProductDto.quantity
+        quantity: updateProductDto.quantity,
       },
     });
   }
@@ -71,10 +72,4 @@ export class ProductsService {
       },
     });
   }
-  // async addProductImg(userId: number, fileData: LocalFileDto) {
-  //   const avatar = await this.localFilesService.saveLocalFileData(fileData);
-  //   await this.usersRepository.update(userId, {
-  //     avatarId: avatar.id
-  //   })
-  // }
 }

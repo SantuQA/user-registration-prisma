@@ -30,11 +30,9 @@ import { UpdateUserControllerAccessDto } from './dto/update-user-controller-accs
 @ApiTags('These are only for admin!')
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {
-   
-  }
-  getControllerName(){
-    return AccessController.USER_CONTROLLER;       // ASSIGN CONTROLLER NAME
+  constructor(private readonly userService: UserService) {}
+  getControllerName() {
+    return AccessController.USER_CONTROLLER; // ASSIGN CONTROLLER NAME
   }
   @UseGuards(SessionGuard)
   @Post()
@@ -68,12 +66,14 @@ export class UserController {
   @HttpCode(200)
   @ApiOperation({ summary: 'Update user access controller' })
   updateUserControllerAccess(
-    @Body() updateUserControllerAccessDto : UpdateUserControllerAccessDto,
+    @Body() updateUserControllerAccessDto: UpdateUserControllerAccessDto,
     @Request() req,
   ) {
     const user = req.user;
     if (user.userType == USER_TYPES.ADMIN) {
-      return this.userService.updateUserControllerAccess(updateUserControllerAccessDto);
+      return this.userService.updateUserControllerAccess(
+        updateUserControllerAccessDto,
+      );
     } else {
       throw new UnauthorizedException('You are not authorised!');
     }
@@ -83,12 +83,14 @@ export class UserController {
   @HttpCode(200)
   @ApiOperation({ summary: 'Remove user access controller' })
   removeUserControllerAccess(
-    @Body() updateUserControllerAccessDto : UpdateUserControllerAccessDto,
+    @Body() updateUserControllerAccessDto: UpdateUserControllerAccessDto,
     @Request() req,
   ) {
     const user = req.user;
     if (user.userType == USER_TYPES.ADMIN) {
-      return this.userService.removeUserControllerAccess(updateUserControllerAccessDto);
+      return this.userService.removeUserControllerAccess(
+        updateUserControllerAccessDto,
+      );
     } else {
       throw new UnauthorizedException('You are not authorised!');
     }
@@ -97,10 +99,7 @@ export class UserController {
   @Post('viewaccesscontrol/:id')
   @HttpCode(200)
   @ApiOperation({ summary: 'View user access controller by Id' })
-  viewControllerAccessById(
-    @Param('id') id : string,
-    @Request() req,
-  ) {
+  viewControllerAccessById(@Param('id') id: string, @Request() req) {
     const user = req.user;
     if (user.userType == USER_TYPES.ADMIN) {
       return this.userService.viewUserControllerAccessByID(id);
@@ -112,7 +111,7 @@ export class UserController {
   @HttpCode(200)
   @ApiOperation({ summary: 'Get all users' })
   findAll(@Request() req) {
-     const user = req.user;
+    const user = req.user;
     if (user.userType == USER_TYPES.ADMIN) {
       return this.userService.findAll();
     } else {
