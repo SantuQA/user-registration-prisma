@@ -62,8 +62,10 @@ http://localhost:3000/api
 ```
 POST
 /auth/login
+```bash
 username-admin
 pwd-admin
+```
 
 ## License
 
