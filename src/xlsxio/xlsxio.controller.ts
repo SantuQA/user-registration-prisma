@@ -16,9 +16,9 @@ import { diskStorage } from 'multer';
 import { xlsxFileUploadDto } from './dto/xlsxUpload.dto';
 import { readFile, utils } from 'xlsx';
 import { join } from 'path';
-import { Prisma } from '@prisma/client';
 import { XlsxioService } from './xlsxio.service';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { Prisma } from 'prisma/generated/client1';
 
 @Controller('xlsxio')
 @ApiTags('Xlsx file Upload/Download')

@@ -1,0 +1,83 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/client1"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model ACCESSS_CONTROL_Master {
+  id             String @id @default(auto()) @map("_id") @db.ObjectId
+  /// Field referred in an index, but found no data to define the type.
+  controllerName String  @unique
+  user    UserMaster    @relation(references: [id], fields: [userId], onDelete: Cascade)
+  userId  String  @db.ObjectId
+}
+
+model UserMaster {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  /// Field referred in an index, but found no data to define the type.
+  // username Json?  @unique
+  // /// Field referred in an index, but found no data to define the type.
+  // email    Json?  @unique
+  username String
+  password String
+  email String      @unique
+  firstName String
+  lastName String
+  userType String
+  access_controls ACCESSS_CONTROL_Master[]
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model User_Permission_Master {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @unique
+  read Boolean
+  write Boolean
+  modify Boolean
+  delete Boolean
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+model Todo{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String
+  title String
+  completed Boolean
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+model ProductMaster{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String
+  name String
+  price Int
+  quantity Int
+  product_img ProductImage[]
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+model ProductImage {
+  id             String @id @default(auto()) @map("_id") @db.ObjectId
+  /// Field referred in an index, but found no data to define the type.
+  name String  @unique
+  url String @unique
+  product    ProductMaster    @relation(references: [id], fields: [productId], onDelete: Cascade)
+  productId  String  @db.ObjectId
+}
+model CustomDataFromXls {
+  id             String @id @default(auto()) @map("_id") @db.ObjectId
+  extendedXlsData Json?
+  xlsdata    CustomDataFromXlsMaster    @relation(references: [id], fields: [xlsdataID], onDelete: Cascade)
+  xlsdataID  String  @db.ObjectId
+}
+model CustomDataFromXlsMaster {
+  id             String @id @default(auto()) @map("_id") @db.ObjectId
+  fileName  String
+  extendedData CustomDataFromXls[]
+
+}
